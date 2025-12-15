@@ -1,4 +1,4 @@
-#include <door/utilities/timespec.h>
+#include "timespec.h"
 
 #include <gtest/gtest.h>
 #include <time.h>
