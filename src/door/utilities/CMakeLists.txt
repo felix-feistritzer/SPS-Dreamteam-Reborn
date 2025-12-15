@@ -5,8 +5,6 @@ add_library(
     timespec.cpp
     eventloop.h
     eventloop.cpp
-    i2c.h
-    i2c.cpp
 )
 
 target_include_directories(
