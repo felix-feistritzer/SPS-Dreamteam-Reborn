@@ -22,6 +22,13 @@
 #include <iostream>
 #include <signal.h>
 
+#include <door/utilities/eventloop.h>
+#include <door/utilities/periodic-timer.h>
+#include <door/utilities/timer-expired.h>
+#include <door/polling-timer.h>
+
+#include <door/utilities/timespec.h>
+
 // quit flag with atomic type
 static volatile sig_atomic_t quit = 0;
 
@@ -142,7 +149,6 @@ int main(int argc, char** argv)
     Outputs outputs(motor);
 
     input_t in;
-    events_t ev;
     output_t out;
     
     // get current inputs and create input struct
@@ -154,52 +160,19 @@ int main(int argc, char** argv)
     // set outputs
     outputs.set_outputs(out);
 
-    // --- run main SPS loop
-    auto interval = TimeSpec::from_milliseconds(1);
+    //1ms time
+    TimeSpec set_time(0, 1000000);
+
+    //Eventloop
+    Eventloop loop;
+    PollingTimer polling_timer(inputs, outputs, door);
+
+    PeriodicTimer timer_handler(set_time, &polling_timer);
+
+    timer_handler.hookup(loop);
+    loop.run();
 
 
-    while (!quit) // graceful termination
-    {
-        // get current events and create event struct
-        ev = inputs.get_events();
-
-        // call door logic, and complain about cycle-time violation
-        auto before = TimeSpec::now_monotonic();
-
-        // run door cyclic and return output struct
-        out = door.cyclic(ev);
-
-        auto after = TimeSpec::now_monotonic();
-
-        auto spent = after - before;
-        if (spent > interval)
-            std::cerr << "WARNING: door logic exceeds interval" << std::endl;
-
-        // set outputs
-        outputs.set_outputs(out);
-
-        // suspend for the rest of the interval
-        auto suspend = interval - spent;
-        rv = nanosleep(&suspend, nullptr);
-        if (rv == -1)
-        {
-            if (errno == EINTR)
-            {
-                if (quit)
-                {
-                    std::cout << "Exiting gracefully..." << std::endl;
-                    break;
-                }
-                continue;
-            }
-            else
-            {
-                perror("nanosleep");
-                return 1;
-            }
-        }
-
-    }
 
     // cleanup before exit
     delete button_outside;

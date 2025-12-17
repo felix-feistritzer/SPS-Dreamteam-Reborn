@@ -5,6 +5,12 @@ set(DOOR_FILES
 
   small_file_handling.h
   small_file_handling.cpp
+
+  event-edge-detector.cpp
+  event-edge-detector.h 
+
+  polling-timer.h
+  polling-timer.cpp
   
 )
 
@@ -18,8 +24,7 @@ add_library(
   door
 
   ${DOOR_FILES}
-  event-edge-detector.cpp
-  event-edge-detector.h 
+
 )
 
 
@@ -30,6 +35,6 @@ target_link_libraries(door PUBLIC analog_stuff)
 
 target_include_directories(
   door
-  INTERFACE
+  PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}/..
 )

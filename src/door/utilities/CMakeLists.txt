@@ -5,6 +5,9 @@ add_library(
     timespec.cpp
     eventloop.h
     eventloop.cpp
+    periodic-timer.cpp
+    periodic-timer.h
+    timer-expired.h
     i2c.h
     i2c.cpp
 )
