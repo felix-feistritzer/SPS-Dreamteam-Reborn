@@ -7,7 +7,6 @@ add_library(
     eventloop.cpp
     periodic-timer.cpp
     periodic-timer.h
-    timer-expired.h
     i2c.h
     i2c.cpp
     event-edge-detector.h

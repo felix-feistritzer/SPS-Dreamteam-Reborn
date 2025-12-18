@@ -39,17 +39,17 @@ output_t Door::cyclic(const events_t events)
 
             output.motor_direction = Motor::Direction::IDLE;
 
+            if (events.button_outside_pressed == EdgeDetector::RISING || events.button_inside_pressed == EdgeDetector::RISING)
+            {
+                _state = State::OPENING;
+            }
+                 
             // Gumminudel is broken
             if (events.analog_state == AnalogSensorEvent::UNDER_VALUE)
             {
                 _state = State::ERROR_SOMETHING_BADLY_WRONG;
             }
-
-            if (events.button_outside_pressed == EdgeDetector::RISING || events.button_inside_pressed == EdgeDetector::RISING)
-            {
-                _state = State::OPENING;
-            }
-            break;
+            break; 
 
         case State::OPENING:
 

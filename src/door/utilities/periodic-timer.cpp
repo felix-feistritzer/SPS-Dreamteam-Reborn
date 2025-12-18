@@ -1,16 +1,15 @@
 #include "periodic-timer.h"
-#include "timer-expired.h"
 
 #include <unistd.h>
 #include <assert.h>
-#include <string.h>
-#include <stdexcept>
-//#include <format>
+
+
+#include <format>
 #include <stdint.h>
 
-PeriodicTimer::PeriodicTimer(TimeSpec set_time, TimerExpired* timer) 
+PeriodicTimer::PeriodicTimer(TimeSpec set_time, std::function<void()> expired) 
+: _expired(expired)
 {
-    _timer = timer;
     _timer_fd = timerfd_create(CLOCK_MONOTONIC, TFD_NONBLOCK);
     if (_timer_fd == -1) {
         perror("timerfd_create");
@@ -41,7 +40,7 @@ EventAction PeriodicTimer::ready(int fd)
         if (n != sizeof(expirations)) {
             return EventAction::Continue;  
         }
-        _timer->expired();
+        expired();
 
         return EventAction::Continue;
     }

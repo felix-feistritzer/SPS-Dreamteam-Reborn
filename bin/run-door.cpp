@@ -164,7 +164,13 @@ int main(int argc, char** argv)
     Eventloop loop;
     PollingTimer polling_timer(inputs, outputs, door);
 
-    PeriodicTimer timer_handler(set_time, &polling_timer);
+    PeriodicTimer timer_handler(set_time,
+                                [&inputs, &outputs, &door]()
+                                {
+                                    events_t ev  = inputs.get_events();
+                                    output_t out = door.cyclic(ev);
+                                    outputs.set_outputs(out);
+                                });
 
     timer_handler.hookup(loop);
     loop.run();
