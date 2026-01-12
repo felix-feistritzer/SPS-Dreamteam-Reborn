@@ -12,4 +12,7 @@ TEST(timer_suite, timer_running)
     
     one_shot.start();
     ASSERT_EQ(one_shot.isrunning(), true);
+
+    one_shot.stop();
+    ASSERT_EQ(one_shot.isrunning(), false);
 }
