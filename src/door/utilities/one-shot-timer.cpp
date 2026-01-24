@@ -9,11 +9,20 @@
 OneShotTimer::OneShotTimer(TimeSpec set_time, std::function<void()> expired) 
 : _expired(expired), _time(set_time)
 {
+    _running = false;
     _timer_fd = timerfd_create(CLOCK_MONOTONIC, TFD_NONBLOCK);
     if (_timer_fd == -1) {
         perror("timerfd_create");
         throw std::runtime_error("timerfd_create failed");
     }
+}
+
+OneShotTimer::~OneShotTimer()
+{
+    assert(!_running);
+
+    if (_timer_fd != -1)
+        close(_timer_fd);
 }
 
 void OneShotTimer::stop()
@@ -27,7 +36,9 @@ void OneShotTimer::stop()
         perror("timerfd_settime");
         throw std::runtime_error("timerfd_settime failed");
     }
-    else{ _running = false; }
+    else { 
+        _running = false; 
+    }
 }
 
 void OneShotTimer::start()
@@ -41,7 +52,9 @@ void OneShotTimer::start()
         perror("timerfd_settime");
         throw std::runtime_error("timerfd_settime failed");
     }
-    else{ _running = true; }
+    else { 
+        _running = true; 
+    }
 }
 
 void OneShotTimer::hookup(Eventloop& loop)
@@ -66,15 +79,4 @@ EventAction OneShotTimer::ready(int fd)
     return EventAction::Continue;
 }
 
-OneShotTimer::~OneShotTimer()
-{
-    if(!_running)
-    {
-        if (_timer_fd != -1)
-            close(_timer_fd);
-    }
-    else{
-        throw std::runtime_error("OneShot-Timer still running. Destruction failed! :'(");
-    }
-}
 

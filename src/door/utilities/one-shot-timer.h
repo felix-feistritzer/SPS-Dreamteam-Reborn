@@ -16,6 +16,8 @@ public:
     void start();
     void hookup(Eventloop&);
     EventAction ready(int fd) override;
+
+    //for tests
     bool isrunning(){ return _running; }
 
 private:
