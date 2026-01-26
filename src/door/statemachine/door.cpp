@@ -37,10 +37,9 @@ output_t Door::cyclic(const events_t events)
 
         case State::CLOSED:
 
-            output.motor_direction = Motor::Direction::IDLE;
-
             if (events.button_outside_pressed == EdgeDetector::RISING || events.button_inside_pressed == EdgeDetector::RISING)
             {
+                output.motor_direction = Motor::Direction::FORWARD;
                 _state = State::OPENING;
             }
     
@@ -54,10 +53,6 @@ output_t Door::cyclic(const events_t events)
 
         case State::OPENING:
 
-            output.motor_direction = Motor::Direction::FORWARD; // could also be BACKWARD, depends on the implemented hardware
-
-            // overcurrent detection -> ERROR
-
             // Gumminudel is broken
             if (events.analog_state == AnalogSensorEvent::UNDER_VALUE)
             {
@@ -66,13 +61,12 @@ output_t Door::cyclic(const events_t events)
 
             if (events.light_barrier_open == EdgeDetector::FALLING)
             {
+                output.motor_direction = Motor::Direction::IDLE;
                 _state = State::OPENED;
             }
             break;
 
         case State::OPENED:
-
-            output.motor_direction = Motor::Direction::IDLE;
 
             // Gumminudel is broken
             if (events.analog_state == AnalogSensorEvent::UNDER_VALUE)
@@ -82,13 +76,12 @@ output_t Door::cyclic(const events_t events)
 
             if (events.button_outside_pressed == EdgeDetector::RISING || events.button_inside_pressed == EdgeDetector::RISING)
             {
+                output.motor_direction = Motor::Direction::BACKWARD;
                 _state = State::CLOSING;
             }
         break;
 
         case State::CLOSING:
-
-            output.motor_direction = Motor::Direction::BACKWARD; // could also be BACKWARD, depends on the implemented hardware
 
             // Kindskopf detected with Gumminudel -> ERROR
             if (events.analog_state == AnalogSensorEvent::OVER_VALUE)
@@ -104,6 +97,7 @@ output_t Door::cyclic(const events_t events)
 
             if (events.light_barrier_closed == EdgeDetector::FALLING)
             {
+                output.motor_direction = Motor::Direction::IDLE;
                 _state = State::CLOSED;
             }           
         break;
