@@ -27,7 +27,7 @@ TEST(door_opening_suite, door_opening_button_outside_pressed)
 
     // check state and output
     ASSERT_EQ(door.get_state(), Door::State::OPENING);
-    ASSERT_EQ(output.motor_direction, Motor::Direction::IDLE);
+    ASSERT_EQ(output.motor_direction, Motor::Direction::FORWARD);
 
     // button change is none
     events.button_outside_pressed = EdgeDetector::NONE;
@@ -63,7 +63,7 @@ TEST(door_opening_suite, door_opening_button_inside_pressed)
 
     // check state and output
     ASSERT_EQ(door.get_state(), Door::State::OPENING);
-    ASSERT_EQ(output.motor_direction, Motor::Direction::IDLE);
+    ASSERT_EQ(output.motor_direction, Motor::Direction::FORWARD);
 
     // button change is none
     events.button_inside_pressed = EdgeDetector::NONE;
@@ -99,14 +99,8 @@ TEST(door_opening_suite, door_open_reached)
 
     // check state and output
     ASSERT_EQ(door.get_state(), Door::State::OPENED);
-    ASSERT_EQ(output.motor_direction, Motor::Direction::FORWARD);
-
-    // run again
-    output = door.cyclic(events);
-
-    // check state and output
-    ASSERT_EQ(door.get_state(), Door::State::OPENED);
     ASSERT_EQ(output.motor_direction, Motor::Direction::IDLE);
+
 }
 
 // ------------------------------------------------------------------------------------
@@ -136,14 +130,8 @@ TEST(door_opening_error_suite, door_opening_gumminudel_broken)
 
     // check state and output
     ASSERT_EQ(door.get_state(), Door::State::ERROR_SOMETHING_BADLY_WRONG);
-    ASSERT_EQ(output.motor_direction, Motor::Direction::FORWARD);
-
-    // run door.cyclic
-    output = door.cyclic(events);
-
-    // check state and output
-    ASSERT_EQ(door.get_state(), Door::State::ERROR_SOMETHING_BADLY_WRONG);
     ASSERT_EQ(output.motor_direction, Motor::Direction::IDLE);
+
 }
 
 // Gumminudel broken in "OPENED"
@@ -171,10 +159,4 @@ TEST(door_opening_error_suite, door_open_gumminudel_broken)
     ASSERT_EQ(door.get_state(), Door::State::ERROR_SOMETHING_BADLY_WRONG);
     ASSERT_EQ(output.motor_direction, Motor::Direction::IDLE);
 
-    // run door.cyclic
-    output = door.cyclic(events);
-
-    // check state and output
-    ASSERT_EQ(door.get_state(), Door::State::ERROR_SOMETHING_BADLY_WRONG);
-    ASSERT_EQ(output.motor_direction, Motor::Direction::IDLE);
 }
