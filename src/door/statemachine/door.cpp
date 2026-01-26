@@ -46,6 +46,7 @@ output_t Door::cyclic(const events_t events)
             // Gumminudel is broken
             if (events.analog_state == AnalogSensorEvent::UNDER_VALUE)
             {
+                output.motor_direction = Motor::Direction::IDLE;
                 _state = State::ERROR_SOMETHING_BADLY_WRONG;
             }
 
@@ -56,6 +57,7 @@ output_t Door::cyclic(const events_t events)
             // Gumminudel is broken
             if (events.analog_state == AnalogSensorEvent::UNDER_VALUE)
             {
+                output.motor_direction = Motor::Direction::IDLE;
                 _state = State::ERROR_SOMETHING_BADLY_WRONG;
             }
 
@@ -71,6 +73,7 @@ output_t Door::cyclic(const events_t events)
             // Gumminudel is broken
             if (events.analog_state == AnalogSensorEvent::UNDER_VALUE)
             {
+                output.motor_direction = Motor::Direction::IDLE;
                 _state = State::ERROR_SOMETHING_BADLY_WRONG;
             }
 
@@ -86,12 +89,14 @@ output_t Door::cyclic(const events_t events)
             // Kindskopf detected with Gumminudel -> ERROR
             if (events.analog_state == AnalogSensorEvent::OVER_VALUE)
             {
+                output.motor_direction = Motor::Direction::FORWARD;
                 _state = State::OPENING;
             }
 
             // Gumminudel is broken
             if (events.analog_state == AnalogSensorEvent::UNDER_VALUE)
             {
+                output.motor_direction = Motor::Direction::IDLE;
                 _state = State::ERROR_SOMETHING_BADLY_WRONG;
             }
 

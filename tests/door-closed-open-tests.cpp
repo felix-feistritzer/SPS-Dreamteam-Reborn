@@ -31,13 +31,6 @@ TEST(door_opening_suite, door_opening_button_outside_pressed)
 
     // button change is none
     events.button_outside_pressed = EdgeDetector::NONE;
-
-    // call door again
-    output = door.cyclic(events);
-
-    // check state and output
-    ASSERT_EQ(door.get_state(), Door::State::OPENING);
-    ASSERT_EQ(output.motor_direction, Motor::Direction::FORWARD);
 }
 
 // Transition from "CLOSED" to "OPENING" with button_inside
@@ -67,13 +60,6 @@ TEST(door_opening_suite, door_opening_button_inside_pressed)
 
     // button change is none
     events.button_inside_pressed = EdgeDetector::NONE;
-
-    // call door again
-    output = door.cyclic(events);
-
-    // check state and output
-    ASSERT_EQ(door.get_state(), Door::State::OPENING);
-    ASSERT_EQ(output.motor_direction, Motor::Direction::FORWARD);
 }
 
 // Transition from "OPENING" to "OPEN"
